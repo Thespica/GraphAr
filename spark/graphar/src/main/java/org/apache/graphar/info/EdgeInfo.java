@@ -184,6 +184,9 @@ public class EdgeInfo {
     }
 
     public AdjacentList getAdjacentList(AdjListType adjListType) {
+        // AdjListType will be checked in this method,
+        // other methods which get adjacent list in this class should call this method first,
+        // so we don't check AdjListType in other methods.
         checkAdjListTypeExist(adjListType);
         return adjacentLists.get(adjListType);
     }
@@ -196,75 +199,49 @@ public class EdgeInfo {
         return propertyGroups.getPropertyGroup(property);
     }
 
-    // TODO(@Thespica): Implement file path get methods
+    public String getPropertyGroupPrefix(PropertyGroup propertyGroup) {
+        checkPropertyGroupExist(propertyGroup);
+        return getPrefix() + "/" + propertyGroup.getPrefix();
+    }
 
-    //    public String getVerticesNumFilePath(AdjListType adjListType) {
-    //    }
-    //
-    //    public String getEdgesNumFilePath(long vertexChunkIndex, AdjListType adjListType) {
-    //    }
-    //
-    //    public String getAdjListFilePath(long vertexChunkIndex, long edgeChunkIndex, AdjListType
-    // adjListType) {
-    //    }
-    //
-    //    public String getAdjListPathPrefix(AdjListType adjListType) {
-    //    }
-    //
-    //    /**
-    //     * Get the adjacency list offset chunk file path of vertex chunk
-    //     * the offset chunks is aligned with the vertex chunks
-    //     *
-    //     * @param vertexChunkIndex index of vertex chunk
-    //     * @param adjListType      The adjacency list type.
-    //     */
-    //    public String getAdjListOffsetFilePath(long vertexChunkIndex, AdjListType adjListType) {
-    //
-    //    }
-    //
-    //    /**
-    //     * Get the path prefix of the adjacency list offset chunk for the given
-    //     * adjacency list type.
-    //     *
-    //     * @param adjListType The adjacency list type.
-    //     * @return A Result object containing the path prefix, or a Status object
-    //     * indicating an error.
-    //     */
-    //    public String getOffsetPathPrefix(AdjListType adjListType) {
-    //
-    //    }
-    //
-    //    public String getPropertyFilePath(
-    //            PropertyGroup propertyGroup,
-    //            AdjListType adjListType, long vertexChunkIndex,
-    //            long edgeChunkIndex) {
-    //
-    //    }
-    //
-    //    /**
-    //     * Get the path prefix of the property group chunk for the given
-    //     * adjacency list type.
-    //     *
-    //     * @param propertyGroup property group.
-    //     * @param adjListType   The adjacency list type.
-    //     * @return A Result object containing the path prefix, or a Status object
-    //     * indicating an error.
-    //     */
-    //    public String getPropertyGroupPathPrefix(
-    //            PropertyGroup propertyGroup,
-    //            AdjListType adjListType) {
-    //
-    //    }
+    public String getPropertyGroupChunkPath(PropertyGroup propertyGroup, long chunkIndex) {
+        // PropertyGroup will be checked in getPropertyGroupPrefix
+        return getPropertyGroupPrefix(propertyGroup) + "/chunk" + chunkIndex;
+    }
 
-    DataType getPropertyType(String propertyName) {
+    public String getAdjacentListPrefix(AdjListType adjListType) {
+        return getPrefix() + "/" + getAdjacentList(adjListType).getPrefix() + "/adj_list";
+    }
+
+    public String getAdjacentListChunkPath(AdjListType adjListType, long vertexChunkIndex) {
+        return getAdjacentListPrefix(adjListType) + "/chunk" + vertexChunkIndex;
+    }
+
+    public String getOffsetPrefix(AdjListType adjListType) {
+        return getAdjacentListPrefix(adjListType) + "/offset";
+    }
+
+    public String getOffsetChunkPath(AdjListType adjListType, long vertexChunkIndex) {
+        return getOffsetPrefix(adjListType) + "/chunk" + vertexChunkIndex;
+    }
+
+    public String getVerticesNumFilePath(AdjListType adjListType) {
+        return getAdjacentListPrefix(adjListType) + "/vertex_count";
+    }
+
+    public String getEdgesNumFilePath(AdjListType adjListType, long vertexChunkIndex) {
+        return getAdjacentListPrefix(adjListType) + "/edge_count" + vertexChunkIndex;
+    }
+
+    public DataType getPropertyType(String propertyName) {
         return propertyGroups.getPropertyType(propertyName);
     }
 
-    boolean isPrimaryKey(String propertyName) {
+    public boolean isPrimaryKey(String propertyName) {
         return propertyGroups.isPrimaryKey(propertyName);
     }
 
-    boolean isNullableKey(String propertyName) {
+    public boolean isNullableKey(String propertyName) {
         return propertyGroups.isNullableKey(propertyName);
     }
 
@@ -338,12 +315,25 @@ public class EdgeInfo {
     }
 
     private void checkAdjListTypeExist(AdjListType adjListType) {
+        if (adjListType == null) {
+            throw new IllegalArgumentException("The adjacency list type is null");
+        }
         if (!adjacentLists.containsKey(adjListType)) {
             throw new IllegalArgumentException(
                     "The adjacency list type "
                             + adjListType
                             + " does not exist in the edge info "
                             + this.edgeTriplet.getConcat());
+        }
+    }
+
+    private void checkPropertyGroupExist(PropertyGroup propertyGroup) {
+        if (propertyGroup == null) {
+            throw new IllegalArgumentException("Property group is null");
+        }
+        if (!hasPropertyGroup(propertyGroup)) {
+            throw new IllegalArgumentException(
+                    "Property group " + propertyGroup + " does not exist in the edge " + getConcat());
         }
     }
 

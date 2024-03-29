@@ -175,6 +175,11 @@ class PropertyGroups {
         return propertyGroupList.size();
     }
 
+    Property getProperty(String propertyName) {
+        checkPropertyExist(propertyName);
+        return properties.get(propertyName);
+    }
+
     DataType getPropertyType(String propertyName) {
         checkPropertyExist(propertyName);
         return properties.get(propertyName).getDataType();
@@ -207,12 +212,10 @@ class PropertyGroups {
         return properties;
     }
 
-    Property getProperty(String propertyName) {
-        checkPropertyExist(propertyName);
-        return properties.get(propertyName);
-    }
-
     private void checkPropertyExist(String propertyName) {
+        if (null == propertyName) {
+            throw new IllegalArgumentException("Property name is null");
+        }
         if (!hasProperty(propertyName)) {
             throw new IllegalArgumentException(
                     "Property " + propertyName + " does not exist in the property group " + this);

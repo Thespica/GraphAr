@@ -104,10 +104,6 @@ public class VertexInfo {
         return propertyGroups.getPropertyGroupNum();
     }
 
-    PropertyGroup getPropertyGroup(String propertyName) {
-        return propertyGroups.getPropertyGroup(propertyName);
-    }
-
     DataType getPropertyType(String propertyName) {
         return propertyGroups.getPropertyType(propertyName);
     }
@@ -128,21 +124,18 @@ public class VertexInfo {
         return propertyGroups.hasPropertyGroup(propertyGroup);
     }
 
-    // TODO(@Thespica): Implement file path get methods
-    //
-    //    String getFilePath(PropertyGroup propertyGroup,
-    //                                    long chunkIndex) {
-    //
-    //    }
-    //
-    //    String getPathPrefix(
-    //            PropertyGroup propertyGroup) {
-    //
-    //    }
-    //
-    //    String getVerticesNumFilePath() {
-    //
-    //    }
+    public String getPropertyGroupPrefix(PropertyGroup propertyGroup) {
+        checkPropertyGroupExist(propertyGroup);
+        return getPrefix() + "/" + propertyGroup.getPrefix();
+    }
+
+    public String getPropertyGroupChunkPath(PropertyGroup propertyGroup, long chunkIndex) {
+        return getPropertyGroupPrefix(propertyGroup) + "/chunk" + chunkIndex;
+    }
+
+    public String getVerticesNumFilePath() {
+        return getPrefix() + "/vertex_count";
+    }
 
     // TODO(@Thespica): Implement save and dump methods
     //
@@ -172,5 +165,15 @@ public class VertexInfo {
 
     public String getVersion() {
         return version;
+    }
+
+    private void checkPropertyGroupExist(PropertyGroup propertyGroup) {
+        if (propertyGroup == null) {
+            throw new IllegalArgumentException("Property group is null");
+        }
+        if (!hasPropertyGroup(propertyGroup)) {
+            throw new IllegalArgumentException(
+                    "Property group " + propertyGroup + " does not exist in the vertex " + getLabel());
+        }
     }
 }
