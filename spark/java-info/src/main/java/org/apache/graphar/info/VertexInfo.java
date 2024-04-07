@@ -19,10 +19,6 @@
 
 package org.apache.graphar.info;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.apache.graphar.info.type.DataType;
 import org.apache.graphar.info.yaml.GraphYamlParser;
 import org.apache.graphar.info.yaml.VertexYamlParser;
@@ -34,6 +30,11 @@ import org.apache.hadoop.fs.Path;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class VertexInfo {
     private final String label;
@@ -192,10 +193,7 @@ public class VertexInfo {
         }
         if (!hasPropertyGroup(propertyGroup)) {
             throw new IllegalArgumentException(
-                    "Property group "
-                            + propertyGroup
-                            + " does not exist in the vertex "
-                            + getLabel());
+                    "Property group " + propertyGroup + " does not exist in the vertex " + getLabel());
         }
     }
 }

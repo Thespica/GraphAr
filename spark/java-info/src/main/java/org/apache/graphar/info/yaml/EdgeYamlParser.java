@@ -19,10 +19,11 @@
 
 package org.apache.graphar.info.yaml;
 
+import org.apache.graphar.info.EdgeInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.graphar.info.EdgeInfo;
 
 public class EdgeYamlParser {
     private String src_label;
@@ -60,14 +61,10 @@ public class EdgeYamlParser {
         this.dst_chunk_size = edgeInfo.getDstChunkSize();
         this.directed = edgeInfo.isDirected();
         this.prefix = edgeInfo.getPrefix();
-        this.adjacent_lists =
-                edgeInfo.getAdjacentLists().values().stream()
-                        .map(AdjacentListYamlParser::new)
-                        .collect(Collectors.toList());
-        this.property_groups =
-                edgeInfo.getPropertyGroups().stream()
-                        .map(PropertyGroupYamlParser::new)
-                        .collect(Collectors.toList());
+        this.adjacent_lists = edgeInfo.getAdjacentLists().values().stream()
+                .map(AdjacentListYamlParser::new).collect(Collectors.toList());
+        this.property_groups = edgeInfo.getPropertyGroups().stream()
+                .map(PropertyGroupYamlParser::new).collect(Collectors.toList());
         this.version = edgeInfo.getVersion();
     }
 

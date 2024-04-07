@@ -19,14 +19,6 @@
 
 package org.apache.graphar.info;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.graphar.info.yaml.GraphYamlParser;
 import org.apache.graphar.util.GeneralParams;
 import org.apache.hadoop.conf.Configuration;
@@ -37,6 +29,15 @@ import org.apache.hadoop.fs.Path;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GraphInfo {
     private final String name;

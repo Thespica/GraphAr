@@ -19,11 +19,12 @@
 
 package org.apache.graphar.info.yaml;
 
+import org.apache.graphar.info.GraphInfo;
+import org.yaml.snakeyaml.DumperOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.graphar.info.GraphInfo;
-import org.yaml.snakeyaml.DumperOptions;
 
 public class GraphYamlParser {
     private String name;
@@ -32,9 +33,8 @@ public class GraphYamlParser {
     private List<String> edges;
     private String version;
     private static final DumperOptions dumperOption;
-
     static {
-        dumperOption = new DumperOptions();
+        dumperOption =new DumperOptions();
         dumperOption.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
         dumperOption.setIndent(4);
         dumperOption.setIndicatorIndent(2);
@@ -52,14 +52,8 @@ public class GraphYamlParser {
     public GraphYamlParser(GraphInfo graphInfo) {
         this.name = graphInfo.getName();
         this.prefix = graphInfo.getPrefix();
-        this.vertices =
-                graphInfo.getVertexInfos().stream()
-                        .map(vertexInfo -> vertexInfo.getLabel() + ".vertex.yaml")
-                        .collect(Collectors.toList());
-        this.edges =
-                graphInfo.getEdgeInfos().stream()
-                        .map(edgeInfo -> edgeInfo.getEdgeLabel() + ".edge.yaml")
-                        .collect(Collectors.toList());
+        this.vertices = graphInfo.getVertexInfos().stream().map(vertexInfo -> vertexInfo.getLabel() + ".vertex.yaml").collect(Collectors.toList());
+        this.edges = graphInfo.getEdgeInfos().stream().map(edgeInfo -> edgeInfo.getEdgeLabel() + ".edge.yaml").collect(Collectors.toList());
         this.version = graphInfo.getVersion();
     }
 

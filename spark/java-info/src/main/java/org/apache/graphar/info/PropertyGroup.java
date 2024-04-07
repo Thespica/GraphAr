@@ -19,6 +19,11 @@
 
 package org.apache.graphar.info;
 
+import org.apache.graphar.info.type.DataType;
+import org.apache.graphar.info.type.FileType;
+import org.apache.graphar.info.yaml.PropertyGroupYamlParser;
+import org.apache.graphar.util.GeneralParams;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,11 +32,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.graphar.info.type.DataType;
-import org.apache.graphar.info.type.FileType;
-import org.apache.graphar.info.yaml.PropertyGroupYamlParser;
-import org.apache.graphar.util.GeneralParams;
-import org.jetbrains.annotations.NotNull;
 
 public class PropertyGroup implements Iterable<Property> {
     private final List<Property> propertyList;
@@ -69,7 +69,6 @@ public class PropertyGroup implements Iterable<Property> {
         return Optional.of(new PropertyGroup(newPropertyMap, fileType, prefix));
     }
 
-    @NotNull
     @Override
     public Iterator<Property> iterator() {
         return propertyList.iterator();
@@ -77,9 +76,7 @@ public class PropertyGroup implements Iterable<Property> {
 
     @Override
     public String toString() {
-        return propertyList.stream()
-                .map(Property::getName)
-                .collect(Collectors.joining(GeneralParams.regularSeparator));
+        return propertyList.stream().map(Property::getName).collect(Collectors.joining(GeneralParams.regularSeparator));
     }
 
     public int size() {

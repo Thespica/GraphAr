@@ -19,42 +19,36 @@
 
 package org.apache.graphar.info.yaml;
 
-import org.apache.graphar.info.AdjacentList;
+import org.apache.graphar.info.PropertyGroup;
 
-public class AdjacentListYamlParser {
-    private boolean ordered;
-    private String aligned_by;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class PropertyGroupYamlParser {
+    private List<PropertyYamlParser> properties;
     private String file_type;
     private String prefix;
 
-    public AdjacentListYamlParser() {
-        this.ordered = false;
-        this.aligned_by = "";
+    public PropertyGroupYamlParser() {
+        this.properties = new ArrayList<>();
         this.file_type = "";
         this.prefix = "";
     }
 
-    public AdjacentListYamlParser(AdjacentList adjacentList) {
-        this.ordered = adjacentList.getType().isOrdered();
-        this.aligned_by = adjacentList.getType().getAlignedBy();
-        this.file_type = adjacentList.getFileType().toString();
-        this.prefix = adjacentList.getPrefix();
+    public PropertyGroupYamlParser(PropertyGroup propertyGroup) {
+        this.properties = propertyGroup.getPropertyList().stream()
+                .map(PropertyYamlParser::new).collect(Collectors.toList());
+        this.file_type = propertyGroup.getFileType().toString();
+        this.prefix = propertyGroup.getPrefix();
     }
 
-    public boolean isOrdered() {
-        return ordered;
+    public List<PropertyYamlParser> getProperties() {
+        return properties;
     }
 
-    public void setOrdered(boolean ordered) {
-        this.ordered = ordered;
-    }
-
-    public String isAligned_by() {
-        return aligned_by;
-    }
-
-    public void setAligned_by(String aligned_by) {
-        this.aligned_by = aligned_by;
+    public void setProperties(List<PropertyYamlParser> properties) {
+        this.properties = properties;
     }
 
     public String getFile_type() {

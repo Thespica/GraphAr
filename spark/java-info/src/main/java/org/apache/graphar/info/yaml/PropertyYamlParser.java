@@ -19,8 +19,9 @@
 
 package org.apache.graphar.info.yaml;
 
-import java.util.Optional;
 import org.apache.graphar.info.Property;
+
+import java.util.Optional;
 
 public class PropertyYamlParser {
     private String name;
