@@ -26,14 +26,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.apache.graphar</groupId>
-    <artifactId>gar-java</artifactId>
+    <artifactId>graphar-java</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
-    <name>gar-java</name>
+    <name>graphar-java</name>
 
     <properties>
-        <native.library.name>gar-java</native.library.name>
+        <native.library.name>graphar-java</native.library.name>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -44,9 +44,9 @@
         <arrow.version>13.0.0</arrow.version>
         <maven-source-plugin.version>2.2.1</maven-source-plugin.version>
         <maven.javadoc.version>3.4.0</maven.javadoc.version>
-        <javadoc.output.directory>gar-java-javadoc</javadoc.output.directory>
-        <javadoc.output.destDir>gar-java-javadoc</javadoc.output.destDir>
-        <buildGarCPP>ON</buildGarCPP>
+        <javadoc.output.directory>graphar-java-javadoc</javadoc.output.directory>
+        <javadoc.output.destDir>graphar-java-javadoc</javadoc.output.destDir>
+        <buildGraphArCPP>ON</buildGraphArCPP>
     </properties>
 
     <dependencies>
@@ -151,7 +151,7 @@
                         <configuration>
                             <target>
                                 <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                <property name="build_gar_cpp" value="${buildGarCPP}"/>
+                                <property name="build_gar_cpp" value="${buildGraphArCPP}"/>
                                 <ant antfile="${basedir}/build.xml">
                                     <target name="run-llvm4jni" />
                                 </ant>
@@ -260,7 +260,7 @@
                     <configuration>
                         <groups>
                             <group>
-                                <title>GarphAr</title>
+                                <title>GraphAr</title>
                                 <packages>org.apache.graphar*</packages>
                             </group>
                         </groups>

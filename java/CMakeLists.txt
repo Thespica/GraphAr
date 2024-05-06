@@ -18,7 +18,7 @@
 cmake_minimum_required(VERSION 3.6)
 project(gar-java)
 
-option(BUILD_GAR_CPP "Build GraphAr C++ library with specific version by default, run mvn with `-DbuildGarCPP=OFF` to turn off" ON)
+option(BUILD_GAR_CPP "Build GraphAr C++ library with specific version by default, run mvn with `-DbuildGraphArCPP=OFF` to turn off" ON)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -g -std=c++17 -Wall")
 
