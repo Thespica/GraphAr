@@ -554,6 +554,8 @@ class EdgeIter {
   Edge operator*() {
     adj_list_reader_.seek(cur_offset_);
     for (auto& reader : property_readers_) {
+      // Ensure property reader is aligned with current vertex chunk before seeking
+      reader.seek_chunk_index(vertex_chunk_index_);
       reader.seek(cur_offset_);
     }
     return Edge(adj_list_reader_, property_readers_);
@@ -570,6 +572,8 @@ class EdgeIter {
   Result<T> property(const std::string& property) noexcept {
     std::shared_ptr<arrow::ChunkedArray> column(nullptr);
     for (auto& reader : property_readers_) {
+      // Ensure property reader is aligned with current vertex chunk before seeking
+      reader.seek_chunk_index(vertex_chunk_index_);
       reader.seek(cur_offset_);
       GAR_ASSIGN_OR_RAISE(auto chunk_table, reader.GetChunk());
       column = util::GetArrowColumnByName(chunk_table, property);
@@ -617,8 +621,10 @@ class EdgeIter {
       if (!st.IsIndexError()) {
         GAR_ASSIGN_OR_RAISE_ERROR(num_row_of_chunk_,
                                   adj_list_reader_.GetRowNumOfChunk());
+        // Use refresh() to ensure all property readers are properly synchronized
+        // to the new vertex_chunk_index_ instead of calling next_chunk() individually
         for (auto& reader : property_readers_) {
-          reader.next_chunk();
+          reader.seek_chunk_index(vertex_chunk_index_);
         }
       }
       cur_offset_ = 0;
