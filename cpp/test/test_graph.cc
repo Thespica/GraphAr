@@ -190,6 +190,56 @@ TEST_CASE_METHOD(GlobalFixture, "Graph") {
         EdgesCollection::Make(graph_info, src_type, edge_type, dst_type,
                               AdjListType::unordered_by_dest);
     REQUIRE(expect4.status().IsInvalid());
+
+    // Test EdgeIter property alignment consistency across different iteration patterns
+    // This test ensures that property values remain consistent whether accessed via
+    // sequential iteration, segmented iteration, or direct property() calls
+    auto expect_full =
+        EdgesCollection::Make(graph_info, src_type, edge_type, dst_type,
+                              AdjListType::ordered_by_source);
+    REQUIRE(!expect_full.has_error());
+    auto edges_full = expect_full.value();
+    
+    // Collect reference data from sequential iteration
+    std::vector<std::tuple<IdType, IdType, std::string>> reference_data;
+    size_t sequential_count = 0;
+    for (auto it = edges_full->begin(); it != edges_full->end() && sequential_count < 100; ++it, ++sequential_count) {
+      auto edge = *it;
+      auto creation_date = edge.property<std::string>("creationDate").value();
+      reference_data.emplace_back(edge.source(), edge.destination(), creation_date);
+    }
+    REQUIRE(reference_data.size() > 0);
+    
+    // Test segmented iteration starting from a different position
+    // This mimics the bug scenario where jumping to position 2000+ caused misalignment
+    size_t segmented_count = 0;
+    size_t skip_count = 0;
+    for (auto it = edges_full->begin(); it != edges_full->end(); ++it) {
+      if (skip_count < 10) {  // Skip first 10 entries to simulate segmented jump
+        skip_count++;
+        continue;
+      }
+      if (segmented_count >= reference_data.size()) break;
+      
+      // Test both direct property access and via edge object
+      auto direct_creation_date = it.property<std::string>("creationDate").value();
+      auto edge = *it;
+      auto edge_creation_date = edge.property<std::string>("creationDate").value();
+      
+      // These should be identical - this was the source of the bug
+      REQUIRE(direct_creation_date == edge_creation_date);
+      
+      // Verify consistency with reference data (if within range)
+      if (segmented_count < reference_data.size()) {
+        const auto& ref = reference_data[segmented_count];
+        REQUIRE(edge.source() == std::get<0>(ref));
+        REQUIRE(edge.destination() == std::get<1>(ref));
+        REQUIRE(edge_creation_date == std::get<2>(ref));
+      }
+      
+      segmented_count++;
+    }
+    REQUIRE(segmented_count > 0);
   }
 
   SECTION("ValidateProperty") {
